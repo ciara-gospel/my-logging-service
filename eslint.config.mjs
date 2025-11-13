@@ -1,47 +1,64 @@
-import js from "@eslint/js";
-import globals from "globals";
-import tseslint from "typescript-eslint";
-import { defineConfig } from "eslint/config";
+// Imports
+import baseConfig from './packages/eslint-config/base.js';
+import nestjsConfig from './packages/eslint-config/nest.js';
+import reactInternalConfig from './packages/eslint-config/react-internal.js'; // Renommé pour clarté
+import nextJsConfig from './packages/eslint-config/nextjs.js';
 
-export default defineConfig([
-  // règles générales pour tous les fichiers JS/TS
-  {
-    files: ["**/*.{js,mjs,cjs,ts,mts,cts}"],
-    plugins: { js },
-    extends: ["js/recommended", "plugin:@typescript-eslint/recommended", "prettier"],
-    languageOptions: {
-      globals: {
-        ...globals.browser,
-        ...globals.node,
+// --- Construction explicite du tableau de configuration ---
+const allConfigs = [];
+
+// 1. Commencez par la configuration de base
+if (Array.isArray(baseConfig)) {
+  allConfigs.push(...baseConfig);
+} else {
+  allConfigs.push(baseConfig); // Si ce n'est pas un tableau, ajoutez-le directement (inhabituel)
+}
+
+// 2. Ajoutez la configuration pour la résolution des alias
+allConfigs.push({
+  settings: {
+    'import/resolver': {
+      typescript: {
+        project: [
+          'tsconfig.base.json',
+          'tsconfig.json',
+          'apps/*/tsconfig.json',
+          'packages/*/tsconfig.json',
+        ],
       },
     },
-    rules: {
-      "no-unused-vars": "warn",
-      "no-console": "off",
-      "prettier/prettier": "error",
-    },
-    ignores: ["node_modules", "dist", ".turbo", "coverage"],
   },
+});
 
-  // règles spécifiques pour NestJS (backend)
-  {
-    files: ["apps/api/**/*.ts"],
-    languageOptions: {
-      globals: globals.node,
-    },
-    rules: {
-      "@typescript-eslint/no-explicit-any": "off",
-    },
-  },
+// 3. Ajoutez la configuration pour NestJS
+if (Array.isArray(nestjsConfig)) {
+  allConfigs.push(...nestjsConfig);
+} else {
+  allConfigs.push(nestjsConfig);
+}
 
-  // règles spécifiques pour Next.js (frontend)
-  {
-    files: ["apps/web/**/*.{ts,tsx}"],
-    languageOptions: {
-      globals: globals.browser,
-    },
-    rules: {
-      "@typescript-eslint/no-unused-vars": "warn",
-    },
+// 4. Ajoutez la configuration pour Next.js
+if (Array.isArray(nextJsConfig)) {
+  allConfigs.push(...nextJsConfig);
+} else {
+  allConfigs.push(nextJsConfig);
+}
+
+// 5. Ajoutez la configuration pour les composants React internes/SDK
+if (Array.isArray(reactInternalConfig)) {
+  allConfigs.push(...reactInternalConfig);
+} else {
+  allConfigs.push(reactInternalConfig);
+}
+
+// 6. Ajoutez la configuration de sécurité pour les fichiers de config
+allConfigs.push({
+  files: ['eslint.config.js', 'packages/eslint-config/*.js'],
+  rules: {
+    '@typescript-eslint/no-unused-vars': 'off',
+    'no-unused-vars': 'off',
   },
-]);
+});
+
+// --- Export final ---
+export default allConfigs;
