@@ -5,10 +5,6 @@ import parser from '@typescript-eslint/parser'
 import securityPlugin from 'eslint-plugin-security'
 import nodePlugin from 'eslint-plugin-node'
 
-/**
- * Configuration ESLint pour les microservices NestJS (backend).
- * Optimisée pour monorepo Turborepo + NestJS + Prisma.
- */
 export default [
   ...baseConfig,
 
@@ -27,7 +23,6 @@ export default [
       node: nodePlugin,
     },
     rules: {
-      /* --- TypeScript / NestJS --- */
       'no-useless-constructor': 'off',
       '@typescript-eslint/no-useless-constructor': 'off',
       'no-empty-function': 'off',
@@ -39,11 +34,9 @@ export default [
       '@typescript-eslint/no-explicit-any': 'warn',
       '@typescript-eslint/no-floating-promises': 'error',
 
-      /* --- Node.js / Monorepo --- */
       'node/no-missing-import': 'off',
       'node/no-unsupported-features/es-syntax': 'off',
 
-      /* --- Sécurité --- */
       'security/detect-eval-with-expression': 'error',
       'security/detect-unsafe-regex': 'error',
       'security/detect-object-injection': 'warn',
