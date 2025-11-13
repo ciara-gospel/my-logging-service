@@ -1,5 +1,5 @@
 {
-  "name": "my-turborepo",
+  "name": "my-logging-service",
   "private": true,
   "scripts": {
     "build": "turbo run build",
