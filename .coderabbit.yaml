@@ -25,7 +25,7 @@ knowledge_base:
 
 # Educational tone - explain WHY, not just WHAT
 tone_instructions: |
-  Senior Softwate engineer and mentor to students. Explain WHY patterns are better, provide learning context, reference best practices, be encouraging while maintaining quality standards. Guide to solutions, don't provide direct fixes.
+  Senior Software engineer and mentor to students. Explain WHY patterns are better, provide learning context, reference best practices, be encouraging while maintaining quality standards. Guide to solutions, don't provide direct fixes.
 
 # Code generation settings - focused on documentation
 code_generation:

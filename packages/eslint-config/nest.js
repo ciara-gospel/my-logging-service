@@ -1,9 +1,9 @@
-/* eslint-disable import/order */
-import baseConfig from './base.js'
 import tseslint from '@typescript-eslint/eslint-plugin'
 import parser from '@typescript-eslint/parser'
 import securityPlugin from 'eslint-plugin-security'
 import nodePlugin from 'eslint-plugin-node'
+
+import baseConfig from './base.js'
 
 export default [
   ...baseConfig,
@@ -13,8 +13,8 @@ export default [
     languageOptions: {
       parser,
       parserOptions: {
-        project: ['./tsconfig.json', './apps/*/tsconfig.json', './packages/*/tsconfig.json'],
-        tsconfigRootDir: process.cwd(),
+        projectService: true,
+        sourceType: 'module',
       },
     },
     plugins: {
