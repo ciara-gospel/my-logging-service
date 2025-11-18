@@ -1,24 +1,87 @@
 {
   "name": "my-logging-service",
   "private": true,
-  "scripts": {
-    "build": "turbo run build",
-    "dev": "turbo run dev",
-    "lint": "turbo run lint",
-    "format": "prettier --write \"**/*.{ts,tsx,md}\"",
-    "check-types": "turbo run check-types"
+  "version": "1.0.0",
+  "description": "A logging and monitoring service monorepo with Turborepo, NestJS for the backend, Next.js for the frontend, and AWS CDK infrastructure.",
+  "author": "Arlette Ologuie",
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": ""
   },
-  "devDependencies": {
-    "prettier": "^3.6.2",
-    "turbo": "^2.6.1",
-    "typescript": "5.9.2"
-  },
-  "engines": {
-    "node": ">=18"
-  },
-  "packageManager": "npm@11.6.2",
   "workspaces": [
     "apps/*",
-    "packages/*"
-  ]
+    "packages/*",
+    "infra"
+  ],
+  "scripts": {
+    "dev": "turbo run dev --parallel",
+    "build:api": "cd apps/api && npm run build",
+    "build:web": "turbo run build --filter=web",
+    "build": "turbo run build",
+    "test": "turbo run test --parallel",
+    "lint": "turbo run lint",
+    "format": "prettier --write \"**/*.{ts,tsx,md}\"",
+    "prepare": "husky install",
+    "docker:up": "docker compose -f docker/docker-compose.yml up -d",
+    "docker:down": "docker compose -f docker/docker-compose.yml down",
+    "bootstrap": "npm run build:api && npm run build:infra && cdk bootstrap",
+    "build:infra": "cdk synth",
+    "docker:rebuild": "docker compose -f docker/docker-compose.yml up -d --build",
+    "infra:synth": "cd infra && cdk synth",
+    "infra:deploy": "cd infra && cdk deploy --all --require-approval never",
+    "infra:destroy": "cd infra && cdk destroy --force",
+    "infra:diff": "cd infra && cdk diff",
+    "ci:check": "turbo run lint test build",
+    "ci:deploy": "npm run infra:deploy",
+    "clean": "rm -rf node_modules && rm -rf apps/*/node_modules && rm -rf packages/*/node_modules && rm -rf .turbo",
+    "cdk": "cdk"
+  },
+  "devDependencies": {
+    "@eslint/js": "^9.39.1",
+    "@turbo/gen": "^1.11.0",
+    "@typescript-eslint/eslint-plugin": "^8.46.4",
+    "@typescript-eslint/parser": "^8.46.4",
+    "aws-cdk-lib": "^2.154.0",
+    "constructs": "^10.3.0",
+    "dotenv-cli": "^7.3.0",
+    "eslint": "^9.39.1",
+    "eslint-config-prettier": "^10.1.8",
+    "eslint-import-resolver-typescript": "^4.4.4",
+    "eslint-plugin-import": "^2.32.0",
+    "eslint-plugin-jsx-a11y": "^6.10.2",
+    "eslint-plugin-node": "^11.1.0",
+    "eslint-plugin-prettier": "^5.5.4",
+    "eslint-plugin-react": "^7.37.5",
+    "eslint-plugin-react-hooks": "^7.0.1",
+    "eslint-plugin-security": "^3.0.1",
+    "eslint-plugin-turbo": "^2.6.0",
+    "husky": "^9.0.0",
+    "lint-staged": "^15.0.0",
+    "prettier": "^3.6.2",
+    "turbo": "^2.6.0",
+    "typescript-eslint": "^8.46.3",
+    "@types/jest": "^29.5.14",
+    "@types/node": "22.7.9",
+    "jest": "^29.7.0",
+    "ts-jest": "^29.2.5",
+    "aws-cdk": "2.1031.0",
+    "ts-node": "^10.9.2",
+    "typescript": "~5.6.3"
+  },
+  "dependencies": {
+    "aws-cdk-lib": "2.215.0",
+    "constructs": "^10.0.0"
+  },
+  "engines": {
+    "node": ">=18.0.0",
+    "npm": ">=9.0.0"
+  },
+  "packageManager": "npm@11.6.2",
+  "lint-staged": {
+    "*.{ts,tsx,js,jsx,json,md}": [
+      "prettier --write",
+      "eslint --fix"
+    ]
+  }
 }
